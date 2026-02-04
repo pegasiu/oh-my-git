@@ -70,7 +70,7 @@ async function writePackageJson() {
   const rootPkg = JSON.parse(await readFile(path.join(rootDir, "package.json"), "utf8"));
 
   const outputPkg = {
-    name: cliPkg.name,
+    name: rootPkg.name ?? cliPkg.name,
     version: rootPkg.version ?? cliPkg.version,
     type: "module",
     bin: cliPkg.bin,

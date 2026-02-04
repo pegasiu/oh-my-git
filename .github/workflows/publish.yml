@@ -1,0 +1,80 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.8
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+      - run: bun install --frozen-lockfile
+      - run: bun run release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-linux
+          path: build/oh-my-git
+          if-no-files-found: error
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.8
+      - uses: dtolnay/rust-toolchain@stable
+      - run: bun install --frozen-lockfile
+      - run: bun run release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gui-macos
+          path: build/oh-my-git/gui/macos/oh-my-git.app
+          if-no-files-found: error
+
+  publish:
+    runs-on: ubuntu-24.04
+    needs: [build-linux, build-macos]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-linux
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: gui-macos
+          path: .
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - run: npm publish --access public
+        working-directory: build/oh-my-git
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
