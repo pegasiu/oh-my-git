@@ -1,0 +1,16 @@
+node_modules
+*.log
+.DS_Store
+.turbo
+/temp
+
+# Build outputs
+/dist
+packages/*/dist
+apps/gui/dist
+apps/gui/src-tauri/target
+/build
+
+# Tauri
+apps/gui/src-tauri/gen
+apps/gui/src-tauri/.tauri

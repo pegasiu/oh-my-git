@@ -1,0 +1,62 @@
+{
+  "identifier": "main",
+  "description": "Default permissions for oh-my-git",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:path:default",
+    "core:path:allow-resolve-directory",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        { "path": "$HOME/.config/oh-my-git/**" },
+        { "path": "$HOME/.ssh/**" },
+        { "path": "$HOME/.gitconfig" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [
+        { "path": "$HOME/.config/oh-my-git/**" },
+        { "path": "$HOME/.ssh/**" },
+        { "path": "$HOME/.gitconfig" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        { "path": "$HOME/.config/oh-my-git/**" },
+        { "path": "$HOME/.ssh/**" },
+        { "path": "$HOME/.gitconfig" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        { "path": "$HOME/.config/oh-my-git" },
+        { "path": "$HOME/.config/oh-my-git/**" },
+        { "path": "$HOME/.ssh" },
+        { "path": "$HOME/.ssh/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [{ "path": "$HOME/.config/oh-my-git" }, { "path": "$HOME/.config/oh-my-git/**" }]
+    },
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "ssh-keygen",
+          "cmd": "ssh-keygen",
+          "args": true
+        },
+        {
+          "name": "gh",
+          "cmd": "gh",
+          "args": true
+        }
+      ]
+    }
+  ]
+}
