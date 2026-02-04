@@ -24,7 +24,17 @@ function run(cmd, args, opts = {}) {
 }
 
 async function buildGui() {
-  await run("bun", ["run", "--cwd", guiDir, "tauri", "build", "--bundles", "app"]);
+  const platform = process.platform;
+  let bundles;
+  if (platform === "darwin") {
+    bundles = ["app"];
+  } else if (platform === "linux") {
+    bundles = ["appimage"];
+  } else {
+    throw new Error("Release build is only supported on macOS and Linux.");
+  }
+
+  await run("bun", ["run", "--cwd", guiDir, "tauri", "build", "--bundles", ...bundles]);
 }
 
 async function buildCli() {
