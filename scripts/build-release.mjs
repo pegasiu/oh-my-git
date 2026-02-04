@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -57,15 +57,21 @@ async function copyGuiBundle() {
     );
     destPath = path.join(outputDir, "gui", "macos", `${appName}.app`);
   } else if (platform === "linux") {
-    srcPath = path.join(
+    const appImageDir = path.join(
       guiDir,
       "src-tauri",
       "target",
       "release",
       "bundle",
       "appimage",
-      `${appName}.AppImage`,
     );
+    const candidates = (await readdir(appImageDir)).filter(
+      (entry) => entry.startsWith(appName) && entry.endsWith(".AppImage"),
+    );
+    if (candidates.length === 0) {
+      throw new Error(`No AppImage found in ${appImageDir}`);
+    }
+    srcPath = path.join(appImageDir, candidates[0]);
     destPath = path.join(outputDir, "gui", "linux", `${appName}.AppImage`);
   } else {
     throw new Error("Release build is only supported on macOS and Linux.");
