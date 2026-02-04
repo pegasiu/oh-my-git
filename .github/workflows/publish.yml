@@ -75,6 +75,7 @@ jobs:
           mkdir -p build/oh-my-git/gui/macos/oh-my-git.app
           cp -a artifact-linux/. build/oh-my-git/
           cp -a artifact-macos/. build/oh-my-git/gui/macos/oh-my-git.app/
+          chmod +x build/oh-my-git/gui/macos/oh-my-git.app/Contents/MacOS/oh-my-git || true
       - uses: actions/setup-node@v4
         with:
           node-version: 20

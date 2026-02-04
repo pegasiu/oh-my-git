@@ -79,10 +79,21 @@ export async function openGui(
   shell: ShellAdapter,
   packageRoot: string,
 ): Promise<void> {
+  async function ensureMacExecutable(appPath: string) {
+    const execPath = path.join(appPath, "Contents", "MacOS", APP.name);
+    if (await fs.exists(execPath)) {
+      const chmod = await shell.exec("chmod", ["+x", execPath]);
+      if (chmod.code !== 0) {
+        throw new Error(chmod.stderr || chmod.stdout || "Failed to chmod app executable");
+      }
+    }
+  }
+
   const platform = resolvePlatform(env);
   if (platform === "darwin") {
     const packaged = getPackagedGuiPath(packageRoot, env);
     if (packaged && (await fs.exists(packaged))) {
+      await ensureMacExecutable(packaged);
       await runCmd(shell, "open", [packaged]);
       return;
     }
@@ -90,6 +101,7 @@ export async function openGui(
     if (repoRoot) {
       const appPath = getRepoBuiltGuiPath(repoRoot, env);
       if (appPath && (await fs.exists(appPath))) {
+        await ensureMacExecutable(appPath);
         await runCmd(shell, "open", [appPath]);
         return;
       }
