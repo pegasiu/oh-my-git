@@ -2,11 +2,17 @@
 
 CLI + GUI toolkit for managing multiple GitHub identities on a single machine. It creates per‑profile SSH keys, host aliases, and Git include rules so the right identity is used automatically per project.
 
-## Packages
-- `packages/shared`: shared types, constants, and small helpers used across CLI, core, and GUI.
-- `packages/core`: filesystem + Git/SSH configuration logic.
-- `packages/cli`: `omg` CLI + Ink TUI.
-- `apps/gui`: Tauri desktop GUI (React).
+## Installation
+```bash
+npm install @pegasou/oh-my-git -g
+```
+
+## Features
+- Multiple GitHub profiles on one machine with automatic identity selection per project.
+- Per‑profile SSH keys and host aliases managed in `~/.ssh/config`.
+- Directory‑to‑profile mapping via `git includeIf` rules.
+- CLI + GUI (Tauri) to manage profiles and mappings.
+- GitHub CLI helpers (`gh login`, `gh switch`, key sync).
 
 ## How It Works
 - Each profile owns its own SSH key and host alias in `~/.ssh/config`.
@@ -48,19 +54,9 @@ Install deps:
 bun install
 ```
 
-Run GUI (dev):
+Run dev mode:
 ```bash
-bun run --cwd apps/gui dev
-```
-
-Run GUI (web-only):
-```bash
-bun run --cwd apps/gui dev:web
-```
-
-Run CLI unit tests:
-```bash
-bun run --cwd packages/cli test
+bun run dev
 ```
 
 Run all tests (turbo):
@@ -71,11 +67,6 @@ bun run test
 Build everything:
 ```bash
 bun run build
-```
-
-Build CLI bundle:
-```bash
-bun run --cwd packages/cli build
 ```
 
 Build release package (GUI + CLI, output in `build/oh-my-git`):
