@@ -65,11 +65,16 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build-linux
-          path: .
+          path: artifact-linux
       - uses: actions/download-artifact@v4
         with:
           name: gui-macos
-          path: .
+          path: artifact-macos
+      - name: Assemble publish directory
+        run: |
+          mkdir -p build/oh-my-git/gui/macos/oh-my-git.app
+          cp -a artifact-linux/. build/oh-my-git/
+          cp -a artifact-macos/. build/oh-my-git/gui/macos/oh-my-git.app/
       - uses: actions/setup-node@v4
         with:
           node-version: 20
